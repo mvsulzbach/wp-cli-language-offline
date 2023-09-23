@@ -15,9 +15,9 @@ $wpcli_languageoffline_init = function () {
 
 		define( 'WPINC', 'wp-includes' );
 		define('WPLANG', 'de_DE');
-		require_once APSPATH . WPINC . '/load.php';
-		require_once APSPATH . WPINC . '/functions.php';
-		require_once APSPATH . WPINC . '/default-constants.php';
+		require_once ABSPATH . WPINC . '/load.php';
+		require_once ABSPATH . WPINC . '/functions.php';
+		require_once ABSPATH . WPINC . '/default-constants.php';
 		wp_initial_constants();
 		define( 'WP_PLUGIN_DIR', WP_CONTENT_DIR . '/plugins' );
 		define( 'WPMU_PLUGIN_DIR', WP_CONTENT_DIR . '/mu-plugins' );
@@ -25,26 +25,26 @@ $wpcli_languageoffline_init = function () {
 		function __( $text, $domain = 'default' ) {
 			return $text;
 		}
-		require_once APSPATH . WPINC . '/version.php';
-		require_once APSPATH . WPINC . '/plugin.php';
-		require_once APSPATH . WPINC . '/general-template.php';
-		require_once APSPATH . WPINC . '/cache.php';
+		require_once ABSPATH . WPINC . '/version.php';
+		require_once ABSPATH . WPINC . '/plugin.php';
+		require_once ABSPATH . WPINC . '/general-template.php';
+		require_once ABSPATH . WPINC . '/cache.php';
 		wp_cache_init();
-		require_once APSPATH . WPINC . '/class-wp-error.php';
-		require_once APSPATH . WPINC . '/class-wp-http.php';
-		require_once APSPATH . WPINC . '/class-wp-http-curl.php';
-		require_once APSPATH . WPINC . '/class-wp-http-requests-hooks.php';
-		require_once APSPATH . WPINC . '/class-wp-http-proxy.php';
-		require_once APSPATH . WPINC . '/class-wp-http-response.php';
-		require_once APSPATH . WPINC . '/class-wp-http-requests-response.php';
-		require_once APSPATH . WPINC . '/http.php';
-		require_once APSPATH . WPINC . '/formatting.php';
-		require_once APSPATH . WPINC . '/pluggable.php';
-		require_once APSPATH . 'wp-admin/includes/file.php';
-		require_once APSPATH . 'wp-admin/includes/plugin.php';
-		require_once APSPATH . WPINC . '/theme.php';
-		require_once APSPATH . WPINC . '/update.php';
-		require_once APSPATH . WPINC . '/kses.php';
+		require_once ABSPATH . WPINC . '/class-wp-error.php';
+		require_once ABSPATH . WPINC . '/class-wp-http.php';
+		require_once ABSPATH . WPINC . '/class-wp-http-curl.php';
+		require_once ABSPATH . WPINC . '/class-wp-http-requests-hooks.php';
+		require_once ABSPATH . WPINC . '/class-wp-http-proxy.php';
+		require_once ABSPATH . WPINC . '/class-wp-http-response.php';
+		require_once ABSPATH . WPINC . '/class-wp-http-requests-response.php';
+		require_once ABSPATH . WPINC . '/http.php';
+		require_once ABSPATH . WPINC . '/formatting.php';
+		require_once ABSPATH . WPINC . '/pluggable.php';
+		require_once ABSPATH . 'wp-admin/includes/file.php';
+		require_once ABSPATH . 'wp-admin/includes/plugin.php';
+		require_once ABSPATH . WPINC . '/theme.php';
+		require_once ABSPATH . WPINC . '/update.php';
+		require_once ABSPATH . WPINC . '/kses.php';
 		wp_set_lang_dir();
 
 		runkit7_function_redefine('get_option', function ( $option, $default_value = false ) {

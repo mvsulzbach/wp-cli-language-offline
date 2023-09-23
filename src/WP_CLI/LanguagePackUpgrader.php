@@ -100,7 +100,7 @@ class LanguagePackUpgrader extends \Language_Pack_Upgrader {
 			return $temp;
 		}
 
-		$this->skin->feedback( 'downloading_package', $package );
+		//$this->skin->feedback( 'downloading_package', $package );
 
 		$temp = download_url( $package, 600 ); // 10 minutes ought to be enough for everybody.
 

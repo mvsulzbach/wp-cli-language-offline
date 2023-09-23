@@ -228,6 +228,7 @@ class Plugin_Language_Command extends WP_CLI\CommandWithTranslation {
 	 *     Success: Installed 1 of 1 languages.
 	 *
 	 * @subcommand install
+	 * @when before_wp_load
 	 */
 	public function install( $args, $assoc_args ) {
 		$all = \WP_CLI\Utils\get_flag_value( $assoc_args, 'all', false );
@@ -443,6 +444,7 @@ class Plugin_Language_Command extends WP_CLI\CommandWithTranslation {
 	 *     Success: Updated 1/1 translation.
 	 *
 	 * @subcommand update
+	 * @when before_wp_load
 	 */
 	public function update( $args, $assoc_args ) {
 		$all = \WP_CLI\Utils\get_flag_value( $assoc_args, 'all', false );
@@ -452,7 +454,10 @@ class Plugin_Language_Command extends WP_CLI\CommandWithTranslation {
 		}
 
 		if ( $all ) {
+			WP_CLI::debug("HALLO");
+			WP_CLI::debug(print_r($this->get_all_plugins(), true));
 			$args = array_map( '\WP_CLI\Utils\get_plugin_name', array_keys( $this->get_all_plugins() ) );
+			WP_CLI::debug(print_r($args, true));
 			if ( empty( $args ) ) {
 				WP_CLI::success( 'No plugins installed.' );
 

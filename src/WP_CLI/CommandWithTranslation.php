@@ -241,6 +241,51 @@ abstract class CommandWithTranslation extends WP_CLI_Command {
 		return $translation->language;
 	}
 
+	function wp_get_installed_translations( $type ) {
+		if ( 'themes' !== $type && 'plugins' !== $type && 'core' !== $type ) {
+			return array();
+		}
+	
+		$dir = 'core' === $type ? '' : "/$type";
+	
+		if ( ! is_dir( WP_LANG_DIR ) ) {
+			return array();
+		}
+	
+		if ( $dir && ! is_dir( WP_LANG_DIR . $dir ) ) {
+			return array();
+		}
+	
+		$files = scandir( WP_LANG_DIR . $dir );
+		if ( ! $files ) {
+			return array();
+		}
+	
+		$language_data = array();
+	
+		foreach ( $files as $file ) {
+			if ( '.' === $file[0] || is_dir( WP_LANG_DIR . "$dir/$file" ) ) {
+				continue;
+			}
+			if ( ! str_ends_with( $file, '.po' ) ) {
+				continue;
+			}
+			if ( ! preg_match( '/(?:(.+)-)?([a-z]{2,3}(?:_[A-Z]{2})?(?:_[a-z0-9]+)?).po/', $file, $match ) ) {
+				continue;
+			}
+			if ( ! in_array( substr( $file, 0, -3 ) . '.mo', $files, true ) ) {
+				continue;
+			}
+	
+			list( , $textdomain, $language ) = $match;
+			if ( '' === $textdomain ) {
+				$textdomain = 'default';
+			}
+			$language_data[ $textdomain ][ $language ] = wp_get_pomo_file_data( WP_LANG_DIR . "$dir/$file" );
+		}
+		return $language_data;
+	}
+
 	/**
 	 * Return a list of installed languages.
 	 *
@@ -249,7 +294,7 @@ abstract class CommandWithTranslation extends WP_CLI_Command {
 	 * @return array
 	 */
 	protected function get_installed_languages( $slug = 'default' ) {
-		$available   = wp_get_installed_translations( $this->obj_type );
+		$available   = $this->wp_get_installed_translations( $this->obj_type );
 		$available   = ! empty( $available[ $slug ] ) ? array_keys( $available[ $slug ] ) : array();
 		$available[] = 'en_US';
 

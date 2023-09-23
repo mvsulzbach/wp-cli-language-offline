@@ -234,6 +234,7 @@ class Theme_Language_Command extends WP_CLI\CommandWithTranslation {
 	 *     Success: Installed 1 of 1 languages.
 	 *
 	 * @subcommand install
+	 * @when before_wp_load
 	 */
 	public function install( $args, $assoc_args ) {
 		$all = \WP_CLI\Utils\get_flag_value( $assoc_args, 'all', false );
@@ -449,6 +450,7 @@ class Theme_Language_Command extends WP_CLI\CommandWithTranslation {
 	 *     Success: Updated 1/1 translation.
 	 *
 	 * @subcommand update
+	 * @when before_wp_load
 	 */
 	public function update( $args, $assoc_args ) {
 		$all = \WP_CLI\Utils\get_flag_value( $assoc_args, 'all', false );

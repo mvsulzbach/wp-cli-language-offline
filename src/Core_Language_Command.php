@@ -181,6 +181,7 @@ class Core_Language_Command extends WP_CLI\CommandWithTranslation {
 	 *     Success: Installed 1 of 1 languages.
 	 *
 	 * @subcommand install
+	 * @when before_wp_load
 	 */
 	public function install( $args, $assoc_args ) {
 		$language_codes = (array) $args;
@@ -310,35 +311,10 @@ class Core_Language_Command extends WP_CLI\CommandWithTranslation {
 	 *     Success: Updated 1/1 translation.
 	 *
 	 * @subcommand update
+	 * @when before_wp_load
 	 */
 	public function update( $args, $assoc_args ) { // phpcs:ignore Generic.CodeAnalysis.UselessOverridingMethod.Found -- Overruling the documentation, so not useless ;-).
 		parent::update( $args, $assoc_args );
-	}
-
-	/**
-	 * Activates a given language.
-	 *
-	 * **Warning: `wp language core activate` is deprecated. Use `wp site switch-language` instead.**
-	 *
-	 * ## OPTIONS
-	 *
-	 * <language>
-	 * : Language code to activate.
-	 *
-	 * ## EXAMPLES
-	 *
-	 *     $ wp language core activate ja
-	 *     Success: Language activated.
-	 *
-	 * @subcommand activate
-	 * @throws WP_CLI\ExitException
-	 */
-	public function activate( $args, $assoc_args ) {
-		\WP_CLI::warning( 'This command is deprecated. use wp site switch-language instead' );
-
-		list( $language_code ) = $args;
-
-		$this->activate_language( $language_code );
 	}
 
 	private function activate_language( $language_code ) {

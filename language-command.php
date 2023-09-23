@@ -5,6 +5,7 @@ if ( ! class_exists( 'WP_CLI' ) ) {
 }
 $wpcli_languageoffline_init = function () {
 	if ( ! defined( 'WP_CONTENT_DIR' ) ) {
+		define('FS_METHOD', 'direct');
 
 		class dummydb {
 		

@@ -46,7 +46,16 @@ $wpcli_languageoffline_init = function () {
 		require_once ABSPATH . WPINC . '/theme.php';
 		require_once ABSPATH . WPINC . '/update.php';
 		require_once ABSPATH . WPINC . '/kses.php';
+		require_once ABSPATH . WPINC . '/class-wp-theme.php';
+		require_once ABSPATH . WPINC . '/error-protection.php';
+		require_once ABSPATH . WPINC . '/class-wp-paused-extensions-storage.php';
+		require_once ABSPATH . WPINC . '/class-wp-recovery-mode.php';
+		require_once ABSPATH . WPINC . '/class-wp-recovery-mode-cookie-service.php';
+		require_once ABSPATH . WPINC . '/class-wp-recovery-mode-key-service.php';
+		require_once ABSPATH . WPINC . '/class-wp-recovery-mode-link-service.php';
+		require_once ABSPATH . WPINC . '/class-wp-recovery-mode-email-service.php';
 		wp_set_lang_dir();
+		register_theme_directory( get_theme_root() );
 
 		runkit7_function_redefine('get_option', function ( $option, $default_value = false ) {
 			switch ($option) {
@@ -57,6 +66,10 @@ $wpcli_languageoffline_init = function () {
 				case 'blog_charset': return 'UTF-8';
 				case '_site_transient_update_core': return false;
 				case '_site_transient_update_plugins': return false;
+				case '_site_transient_update_themes': return false;
+				case 'stylesheet': return 'mvsu';
+				case '_site_transient_timeout_theme_roots': return false;
+				case '_site_transient_theme_roots': return false;
 				case 'initial_db_version': return -1;
 				case 'active_plugins': return custom_get_plugins();
 				case 'timezone_string': return 'Europe/Berlin';

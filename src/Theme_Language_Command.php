@@ -238,6 +238,7 @@ class Theme_Language_Command extends WP_CLI\CommandWithTranslation {
 	 */
 	public function install( $args, $assoc_args ) {
 		$all = \WP_CLI\Utils\get_flag_value( $assoc_args, 'all', false );
+		wp_installing(true);
 
 		if ( ! $all && count( $args ) < 2 ) {
 			\WP_CLI::error( 'Please specify a theme, or use --all.' );
@@ -248,6 +249,7 @@ class Theme_Language_Command extends WP_CLI\CommandWithTranslation {
 		} else {
 			$this->install_one( $args, $assoc_args );
 		}
+		wp_installing(false);
 	}
 
 	/**

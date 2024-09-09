@@ -148,6 +148,8 @@ abstract class CommandWithTranslation extends WP_CLI_Command {
 			return $available;
 		};
 
+		wp_installing(true);
+
 		switch ( $this->obj_type ) {
 			case 'plugins':
 				add_filter( 'plugins_update_check_locales', $func );
@@ -191,6 +193,8 @@ abstract class CommandWithTranslation extends WP_CLI_Command {
 		foreach ( $transient->translations as $translation ) {
 			$updates[] = (object) $translation;
 		}
+
+		wp_installing(false);
 
 		return $updates;
 	}

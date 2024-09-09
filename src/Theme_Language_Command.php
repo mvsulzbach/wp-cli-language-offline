@@ -457,6 +457,8 @@ class Theme_Language_Command extends WP_CLI\CommandWithTranslation {
 	public function update( $args, $assoc_args ) {
 		$all = \WP_CLI\Utils\get_flag_value( $assoc_args, 'all', false );
 
+		wp_installing(true);
+
 		if ( ! $all && empty( $args ) ) {
 			WP_CLI::error( 'Please specify one or more themes, or use --all.' );
 		}
@@ -469,6 +471,8 @@ class Theme_Language_Command extends WP_CLI\CommandWithTranslation {
 				return;
 			}
 		}
+
+		wp_installing(false);
 
 		parent::update( $args, $assoc_args );
 	}

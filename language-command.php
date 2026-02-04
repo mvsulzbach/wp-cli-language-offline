@@ -39,8 +39,9 @@ $wpcli_languageoffline_init = function () {
 		require_once ABSPATH . WPINC . '/class-wp-http-response.php';
 		require_once ABSPATH . WPINC . '/class-wp-http-requests-response.php';
 		require_once ABSPATH . WPINC . '/http.php';
-		require_once ABSPATH . WPINC . '/formatting.php';
+		require_once ABSPATH . WPINC . '/compat.php';
 		require_once ABSPATH . WPINC . '/utf8.php';
+		require_once ABSPATH . WPINC . '/formatting.php';
 		require_once ABSPATH . WPINC . '/pluggable.php';
 		require_once ABSPATH . 'wp-admin/includes/file.php';
 		require_once ABSPATH . 'wp-admin/includes/plugin.php';

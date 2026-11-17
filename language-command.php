@@ -8,7 +8,46 @@ $wpcli_languageoffline_init = function () {
 		define('FS_METHOD', 'direct');
 
 		class dummydb {
-		
+			public $options = 'offline_options';
+
+			public function suppress_errors( $suppress = true ) {
+				return false;
+			}
+
+			public function prepare( $query, ...$args ) {
+				if ( ! in_array( $query, array(
+					"SELECT option_value FROM $this->options WHERE option_name = %s LIMIT 1",
+					"SELECT autoload FROM $this->options WHERE option_name = %s",
+				), true ) || count( $args ) !== 1 ) {
+					throw new \RuntimeException( 'Unexpected offline database query: ' . $query );
+				}
+				return array( $query, $args[0] );
+			}
+
+			public function get_row( $query ) {
+				if ( ! is_array( $query ) || count( $query ) !== 2 ) {
+					throw new \RuntimeException( 'Unexpected offline database read.' );
+				}
+				if ( str_starts_with( $query[0], 'SELECT option_value' ) && ! in_array( $query[1], array(
+					'_site_transient_update_core',
+					'_site_transient_update_plugins',
+					'_site_transient_update_themes',
+					'_site_transient_timeout_theme_roots',
+					'_site_transient_theme_roots',
+				), true ) ) {
+					throw new \RuntimeException( 'Unexpected offline option: ' . $query[1] );
+				}
+				WP_CLI::debug( 'Offline option read: ' . $query[1] );
+				return null;
+			}
+
+			public function get_results( $query ) {
+				if ( ! preg_match( "/^SELECT option_name, option_value FROM offline_options(?: WHERE autoload (?:= 'yes'|IN \\( [^)]+ \\)))?$/", $query ) ) {
+					throw new \RuntimeException( 'Unexpected offline database query: ' . $query );
+				}
+				WP_CLI::debug( 'Offline autoloaded options read.' );
+				return array();
+			}
 		}
 		
 		global $wpdb;
@@ -59,35 +98,37 @@ $wpcli_languageoffline_init = function () {
 		wp_set_lang_dir();
 		register_theme_directory( get_theme_root() );
 
-		runkit7_function_redefine('get_option', function ( $option, $default_value = false ) {
-			switch ($option) {
-				case 'siteurl': return 'wpoffline';
-				case 'upload_path': return '';
-				case 'upload_url_path': return '';
-				case 'uploads_use_yearmonth_folders': return 1;
-				case 'blog_charset': return 'UTF-8';
-				case '_site_transient_update_core': return false;
-				case '_site_transient_update_plugins': return false;
-				case '_site_transient_update_themes': return false;
-				case 'stylesheet': return 'mvsu';
-				case '_site_transient_timeout_theme_roots': return false;
-				case '_site_transient_theme_roots': return false;
-				case 'initial_db_version': return -1;
-				case 'active_plugins': return custom_get_plugins();
-				case 'timezone_string': return 'Europe/Berlin';
-				case 'home': return 'wpoffline';
-			}
-			WP_CLI::warning("get_option " . $option . ' default ' . $default_value);
-			undefined();
-		});
-
-		runkit7_function_redefine('delete_option', function ( $option ) {
-			WP_CLI::debug("delete_option " . $option);
-		});
-
-		runkit7_function_redefine('add_option', function ( $option, $value = '', $deprecated = '', $autoload = 'yes' ) {
-			WP_CLI::debug("add_option " . $option);
-		});
+		add_filter( 'pre_wp_load_alloptions', function () {
+			return array();
+		} );
+		$options = array(
+			'siteurl' => 'wpoffline',
+			'upload_path' => '',
+			'upload_url_path' => '',
+			'uploads_use_yearmonth_folders' => 1,
+			'blog_charset' => 'UTF-8',
+			'stylesheet' => 'mvsu',
+			'initial_db_version' => -1,
+			'timezone_string' => 'Europe/Berlin',
+			'home' => 'wpoffline',
+		);
+		foreach ( $options as $option => $value ) {
+			add_filter( "pre_option_{$option}", function () use ( $value ) {
+				return $value;
+			} );
+		}
+		add_filter( 'pre_option_active_plugins', function () {
+			return custom_get_plugins();
+		} );
+		foreach ( array(
+			'_site_transient_update_core',
+			'_site_transient_update_plugins',
+			'_site_transient_update_themes',
+			'_site_transient_timeout_theme_roots',
+			'_site_transient_theme_roots',
+		) as $option ) {
+			add_filter( "default_option_{$option}", '__return_false' );
+		}
 		define( 'WP_CONTENT_URL', get_option( 'siteurl' ) . '/wp-content' );
 
 		function wp_get_pomo_file_data( $po_file ) {
